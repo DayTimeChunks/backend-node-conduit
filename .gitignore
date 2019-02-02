@@ -1,7 +1,11 @@
+# keys
+app.yaml
+
 # Logs
 logs
 *.log
 .DS_Store
+.idea
 
 npm-debug.log*
 

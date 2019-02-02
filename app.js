@@ -1,3 +1,5 @@
+'use strict';
+
 // Require models and auth.
 require('./models/User'); // Register our User model with our application
 require('./models/Article'); // Register our Articles model with our application
@@ -37,7 +39,13 @@ if (!isProduction) {
 }
 
 if(isProduction){
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+      console.log('Database connection successful')
+  })
+    .catch(err => {
+      console.error('Database connection error: ', err)
+    })
 } else {
   mongoose.connect('mongodb://localhost/conduit');
   mongoose.set('debug', true);

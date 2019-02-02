@@ -1,7 +1,11 @@
 
 # Thinkster Tutorial Part 1 (Available for free until Part 2)
 
+
+
 ## Setting up
+
+[Set up](https://thinkster.io/tutorials/node-json-api)
 
 After cloning this [app](https://github.com/gothinkster/node-express-realworld-example-app), I installed node:
 

@@ -16,8 +16,8 @@ let UserSchema = new mongoose.Schema({
   image: String,
   hash: String,
   salt: String,
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article' }], // Tutorial part 5
 }, {timestamps: true});
-
 
 
 /*
@@ -76,6 +76,33 @@ UserSchema.methods.toProfileJSONFor = function(user){
     image: this.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
     following:  false  // we'll implement following functionality in a few chapters :)
   }
+};
+
+/*
+* Tutorial part 5 below (see above as well)
+* */
+
+// Save the id into favourites array, if not already existing
+UserSchema.methods.favorite = function(id){
+  if(this.favorites.indexOf(id) === -1){
+    // this.favorites.push(id); // bug with old MongoDB Version
+    this.favorites = this.favorites.concat([id]);
+  }
+
+  return this.save();
+  //  TODO: call Article.updateFavoriteCount() ??
+};
+
+UserSchema.methods.unfavorite = function(id){
+  this.favorites.remove( id );
+  return this.save();
+  //  TODO: call Article.updateFavoriteCount() ??
+};
+
+UserSchema.methods.isFavorite = function(id){
+  return this.favorites.some(function(favoriteId){
+    return favoriteId.toString() === id.toString();
+  });
 };
 
 mongoose.model('User', UserSchema);

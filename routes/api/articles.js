@@ -29,7 +29,6 @@ router.post('/', auth.required, function(req, res, next) {
 });
 
 
-
 router.param('article', function(req, res, next, slug) {
   Article.findOne({ slug: slug})
     .populate('author')
@@ -88,6 +87,36 @@ router.delete('/:article', auth.required, function(req, res, next) {
       return res.sendStatus(403);
     }
   });
+});
+
+// Favorite an article  //.. Tutorial 5
+router.post('/:article/favorite', auth.required, function(req, res, next) {
+  let articleId = req.article._id;
+
+  User.findById(req.payload.id).then(function(user){
+    if (!user) { return res.sendStatus(401); }
+
+    return user.favorite(articleId).then(function(){
+      return req.article.updateFavoriteCount().then(function(article){
+        return res.json({article: article.toJSONFor(user)});
+      });
+    });
+  }).catch(next);
+});
+
+// Unfavorite an article (only difference is the DELETE method used)
+router.delete('/:article/favorite', auth.required, function(req, res, next) {
+  let articleId = req.article._id;
+
+  User.findById(req.payload.id).then(function (user){
+    if (!user) { return res.sendStatus(401); }
+
+    return user.unfavorite(articleId).then(function(){
+      return req.article.updateFavoriteCount().then(function(article){
+        return res.json({article: article.toJSONFor(user)});
+      });
+    });
+  }).catch(next);
 });
 
 module.exports = router;
